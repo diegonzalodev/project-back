@@ -16,10 +16,10 @@ app.get("/products", async (req, res) => {
     let { limit } = req.query;
     limit = parseInt(limit);
 
-    if (!limit || limit <= 0 || limit > arrayProducts.length) return res.send(arrayProducts);
+    if (!limit || limit <= 0 || limit > arrayProducts.length)
+      return res.send(arrayProducts);
 
-    const limitProducts = arrayProducts.slice(0, limit);
-    res.send(limitProducts);
+    res.send(arrayProducts.slice(0, limit));
   } catch (error) {
     console.log(error);
     res.send({ error: "Internal server error" });
@@ -29,9 +29,12 @@ app.get("/products", async (req, res) => {
 app.get("/products/:pid", async (req, res) => {
   try {
     const arrayProducts = await product.getProducts();
-    const findByIdProduct = arrayProducts.find((prod) => prod.id === Number(req.params.pid));
+    const findByIdProduct = arrayProducts.find(
+      (prod) => prod.id === Number(req.params.pid)
+    );
 
-    if (!findByIdProduct) return res.send({ error: "This product doesn't exist" });
+    if (!findByIdProduct)
+      return res.send({ error: "This product doesn't exist" });
 
     res.send(findByIdProduct);
   } catch (error) {
