@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/app.js"
   },
   "repository": {
     "type": "git",
@@ -18,10 +18,8 @@
     "url": "https://github.com/diegonzalodev/project-back/issues"
   },
   "homepage": "https://github.com/diegonzalodev/project-back#readme",
-  "dependencies": {
-    "express": "^4.18.2"
-  },
   "devDependencies": {
+    "express": "^4.18.2",
     "nodemon": "^2.0.22"
   }
 }

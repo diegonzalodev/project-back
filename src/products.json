@@ -1,92 +1,62 @@
 [
-	{
-		"id": 1,
-		"title": "Product 1",
-		"description": "This is product 1",
-		"price": 200,
-		"thumbnail": "No image",
-		"code": "001",
-		"stock": 25
-	},
-	{
-		"id": 2,
-		"title": "Product 2",
-		"description": "This is product 2",
-		"price": 200,
-		"thumbnail": "No image",
-		"code": "002",
-		"stock": 25
-	},
-	{
-		"id": 3,
-		"title": "Product 3",
-		"description": "This is product 3",
-		"price": 200,
-		"thumbnail": "No image",
-		"code": "003",
-		"stock": 25
-	},
-	{
-		"id": 4,
-		"title": "Product 4",
-		"description": "This is product 4",
-		"price": 200,
-		"thumbnail": "No image",
-		"code": "004",
-		"stock": 25
-	},
-	{
-		"id": 5,
-		"title": "Product 5",
-		"description": "This is product 5",
-		"price": 200,
-		"thumbnail": "No image",
-		"code": "005",
-		"stock": 25
-	},
-	{
-		"id": 6,
-		"title": "Product 6",
-		"description": "This is product 6",
-		"price": 200,
-		"thumbnail": "No image",
-		"code": "006",
-		"stock": 25
-	},
-	{
-		"id": 7,
-		"title": "Product 7",
-		"description": "This is product 7",
-		"price": 200,
-		"thumbnail": "No image",
-		"code": "007",
-		"stock": 25
-	},
-	{
-		"id": 8,
-		"title": "Product 8",
-		"description": "This is product 8",
-		"price": 200,
-		"thumbnail": "No image",
-		"code": "008",
-		"stock": 25
-	},
-	{
-		"id": 9,
-		"title": "Product 9",
-		"description": "This is product 9",
-		"price": 200,
-		"thumbnail": "No image",
-		"code": "009",
-		"stock": 25
-	},
-	{
-		"id": 10,
-		"title": "Product 10",
-		"description": "This is product 10",
-		"price": 200,
-		"thumbnail": "No image",
-		"code": "010",
-		"stock": 25
-	}
+  {
+    "id": 1,
+    "title": "Product 1",
+    "description": "This is product 1",
+    "code": "001",
+    "price": 50,
+    "stock": 15,
+    "category": "Old category",
+    "thumbnails": [
+      "http://image.com"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Product 2",
+    "description": "This is product 2",
+    "code": "002",
+    "price": 150,
+    "stock": 25,
+    "category": "Category 2",
+    "thumbnails": [
+      "http://image.com"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Product 3",
+    "description": "This is product 3",
+    "code": "003",
+    "price": 150,
+    "stock": 25,
+    "category": "Category 3",
+    "thumbnails": [
+      "http://image.com"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Product 4",
+    "description": "This is product 4",
+    "code": "004",
+    "price": 120,
+    "stock": 15,
+    "category": "Category 4",
+    "thumbnails": [
+      "http://image.com"
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Product 5",
+    "description": "This is product 5",
+    "code": "005",
+    "price": 120,
+    "stock": 15,
+    "category": "Category 5",
+    "thumbnails": [
+      "http://image.com"
+    ]
+  }
 ]

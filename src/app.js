@@ -1,48 +1,17 @@
-import express from "express";
-import { ProductManager } from "./ProductManager.js";
-
-const product = new ProductManager("./products.json");
+const express = require('express');
 const app = express();
 
-app.get(express.urlencoded({ extended: true }));
+const productRouter = require('./routes/products.router');
+const cartRouter = require('./routes/carts.router');
 
-app.get("/", (req, res) => {
-  res.send("App is running");
-});
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get("/products", async (req, res) => {
-  try {
-    const arrayProducts = await product.getProducts();
-    let { limit } = req.query;
-    limit = parseInt(limit);
+app.use('/api/products', productRouter);
+app.use('/api/carts', cartRouter);
 
-    if (!limit || limit <= 0 || limit > arrayProducts.length)
-      return res.send(arrayProducts);
+const PORT = 8080;
 
-    res.send(arrayProducts.slice(0, limit));
-  } catch (error) {
-    console.log(error);
-    res.send({ error: "Internal server error" });
-  }
-});
-
-app.get("/products/:pid", async (req, res) => {
-  try {
-    const arrayProducts = await product.getProducts();
-    const findByIdProduct = arrayProducts.find(
-      (prod) => prod.id === Number(req.params.pid)
-    );
-
-    if (!findByIdProduct)
-      return res.send({ error: "This product doesn't exist" });
-
-    res.send(findByIdProduct);
-  } catch (error) {
-    console.log(error);
-    res.send({ error: "Internal server error" });
-  }
-});
-
-app.listen(8080, () => {
-  console.log("Server listen in port 8080");
+app.listen(PORT, () => {
+  console.log(`Server listen in port: ${PORT}`);
 });
