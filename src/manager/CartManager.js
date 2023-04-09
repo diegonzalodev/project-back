@@ -25,8 +25,7 @@ class CartManagerFile {
   createCart = async () => {
     try {
       const carts = await this.readFile();
-      const newCartId =
-        carts.length > 0 ? Math.max(...carts.map((cart) => cart.id)) + 1 : 1;
+      const newCartId = carts.length > 0 ? Math.max(...carts.map((cart) => cart.id)) + 1 : 1;
       const newCart = { id: newCartId, products: [] };
       carts.push(newCart);
       await fs.promises.writeFile(
