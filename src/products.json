@@ -2,61 +2,61 @@
   {
     "id": 1,
     "title": "Product 1",
-    "description": "This is product 1",
+    "price": "45",
     "code": "001",
-    "price": 50,
-    "stock": 15,
-    "category": "Old category",
-    "thumbnails": [
-      "http://image.com"
-    ]
+    "stock": "25",
+    "category": "Category 1",
+    "description": "This is product 1",
+    "thumbnail": "http://image.com"
   },
   {
     "id": 2,
     "title": "Product 2",
-    "description": "This is product 2",
+    "price": "35",
     "code": "002",
-    "price": 150,
-    "stock": 25,
+    "stock": "14",
     "category": "Category 2",
-    "thumbnails": [
-      "http://image.com"
-    ]
+    "description": "This is product 2",
+    "thumbnail": "http://image.com"
   },
   {
     "id": 3,
     "title": "Product 3",
-    "description": "This is product 3",
+    "price": "45",
     "code": "003",
-    "price": 150,
-    "stock": 25,
+    "stock": "11",
     "category": "Category 3",
-    "thumbnails": [
-      "http://image.com"
-    ]
+    "description": "This is product 3",
+    "thumbnail": "http://image.com"
   },
   {
     "id": 4,
     "title": "Product 4",
-    "description": "This is product 4",
+    "price": "34",
     "code": "004",
-    "price": 120,
-    "stock": 15,
+    "stock": "5",
     "category": "Category 4",
-    "thumbnails": [
-      "http://image.com"
-    ]
+    "description": "This is product 4",
+    "thumbnail": "http://image.com"
   },
   {
     "id": 5,
     "title": "Product 5",
-    "description": "This is product 5",
+    "price": "105",
     "code": "005",
-    "price": 120,
-    "stock": 15,
+    "stock": "40",
     "category": "Category 5",
-    "thumbnails": [
-      "http://image.com"
-    ]
+    "description": "This is product 5",
+    "thumbnail": "http://image.com"
+  },
+  {
+    "id": 6,
+    "title": "Product 6",
+    "price": "21",
+    "code": "006",
+    "stock": "13",
+    "category": "Category 6",
+    "description": "This is product 6",
+    "thumbnail": "http://image.com"
   }
 ]

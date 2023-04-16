@@ -18,8 +18,10 @@
     "url": "https://github.com/diegonzalodev/project-back/issues"
   },
   "homepage": "https://github.com/diegonzalodev/project-back#readme",
-  "devDependencies": {
+  "dependencies": {
     "express": "^4.18.2",
-    "nodemon": "^2.0.22"
+    "express-handlebars": "^7.0.6",
+    "handlebars": "^4.7.7",
+    "socket.io": "^4.6.1"
   }
 }

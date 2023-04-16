@@ -39,8 +39,8 @@ class ProductManagerFile {
       if (verifyProduct) return { error: "A product with this code already exists" };
       let id = products.length ? products[products.length - 1].id + 1 : 1;
       let status = newProduct.status === (undefined || " ") ? true : newProduct.status;
-      let thumbnails = newProduct.thumbnails || [];
-      const product = { id, ...newProduct, status, thumbnails };
+      let thumbnail = newProduct.thumbnail || [];
+      const product = { id, ...newProduct, status, thumbnail };
       products.push(product);
       await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2), "utf-8");
       return {success: "Product added", payload: product};
