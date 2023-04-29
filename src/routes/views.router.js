@@ -2,6 +2,7 @@ const { Router } = require("express");
 const fs = require("fs");
 const path = require("path");
 const filePath = path.join(__dirname, "../products.json");
+const { messageModel } = require("../dao/mongodb/models/message.model.js");
 
 const router = Router();
 
@@ -27,8 +28,14 @@ router.get("/realtimeproducts", (req, res) => {
   }
 });
 
-router.get("/chat", (req, res) => {
-  res.render("chat", {});
+router.get("/chat", async (req, res) => {
+  try {
+    const messages = await messageModel.find().lean();
+    res.render("chat", { messages });
+  } catch (error) {
+    console.error("Error fetching messages from DB:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 module.exports = router;

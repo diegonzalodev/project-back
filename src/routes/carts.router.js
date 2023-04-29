@@ -1,6 +1,6 @@
 const { Router } = require("express");
-const { CartManagerFile } = require("../manager/CartManager");
-const { ProductManagerFile } = require("../manager/ProductManager");
+const { CartManagerFile } = require("../dao/filesystem/CartManager");
+const { ProductManagerFile } = require("../dao/filesystem/ProductManager");
 
 const router = Router();
 const cartManager = new CartManagerFile();

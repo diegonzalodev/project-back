@@ -1,13 +1,15 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
 const { Server } = require("socket.io");
-const { ProductManagerFile } = require("./manager/ProductManager");
-const productRouter = require("./routes/products.router");
-const cartRouter = require("./routes/carts.router");
-const viewsRouter = require("./routes/views.router");
+const routerServer = require("./routes");
+const { connectDB } = require("./config/configServer.js");
+const { ProductManagerFile } = require("./dao/filesystem/ProductManager");
+const { messageModel } = require("./dao/mongodb/models/message.model.js");
 
 const app = express();
 const PORT = 8080;
+
+connectDB();
 
 const httpServer = app.listen(PORT, () => {
   console.log(`Server listen in port: ${PORT}`);
@@ -24,9 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/static", express.static(__dirname + "/public"));
 
-app.use("/", viewsRouter);
-app.use("/api/products", productRouter);
-app.use("/api/carts", cartRouter);
+app.use(routerServer);
 
 socketServer.on("connection", async (socket) => {
   console.log("Client Connected", socket.id);
@@ -48,9 +48,25 @@ socketServer.on("connection", async (socket) => {
     const addProduct = await productManager.addProduct(data);
     if (addProduct.status === "error") {
       let errorMessage = addProduct.message;
-      socketServer.emit("server:producAdded", { status: "error", errorMessage });
+      socketServer.emit("server:producAdded", {
+        status: "error",
+        errorMessage,
+      });
     }
     const newData = await productManager.getProducts();
     return socketServer.emit("server:productAdded", newData);
+  });
+
+  socket.on("chatMessage", async (data) => {
+    try {
+      const newMessage = new messageModel({
+        email: data.email,
+        message: data.message,
+      });
+      const savedMessage = await newMessage.save();
+      socketServer.emit("newMessage", savedMessage);
+    } catch (error) {
+      console.error("There is an error to save the message", error);
+    }
   });
 });
