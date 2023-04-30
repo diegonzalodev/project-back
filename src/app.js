@@ -3,8 +3,8 @@ const handlebars = require("express-handlebars");
 const { Server } = require("socket.io");
 const routerServer = require("./routes");
 const { connectDB } = require("./config/configServer.js");
-const { ProductManagerFile } = require("./dao/filesystem/ProductManager");
 const { messageModel } = require("./dao/mongodb/models/message.model.js");
+const productManager = require("./dao/mongodb/ProductManagerMongo");
 
 const app = express();
 const PORT = 8080;
@@ -31,12 +31,10 @@ app.use(routerServer);
 socketServer.on("connection", async (socket) => {
   console.log("Client Connected", socket.id);
 
-  const productManager = new ProductManagerFile();
-
-  socket.on("client:deleteProduct", async (pid, cid) => {
-    const id = await productManager.getProductById(parseInt(pid.id));
+  socket.on("client:deleteProduct", async (pid) => {
+    const id = await productManager.getProductById(pid.id);
     if (id) {
-      await productManager.deleteProduct(parseInt(pid.id));
+      await productManager.deleteProduct(pid.id);
       const data = await productManager.getProducts();
       return socketServer.emit("newList", data);
     }

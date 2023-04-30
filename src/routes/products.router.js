@@ -28,9 +28,7 @@ router.post("/", async (req, res) => {
 router.get("/:pid", async (req, res) => {
   try {
     const products = await productManager.getProducts();
-    const findByID = products.find(
-      (prod) => prod.id === Number(req.params.pid)
-    );
+    const findByID = products.find((prod) => prod.id === req.params.pid);
     if (!findByID) return res.send({ error: "This product doesn't exist" });
     res.send(findByID);
   } catch (error) {
@@ -41,7 +39,7 @@ router.get("/:pid", async (req, res) => {
 router.put("/:pid", async (req, res) => {
   try {
     const updatedProduct = await productManager.updateProduct(
-      Number(req.params.pid),
+      req.params.pid,
       req.body
     );
     res.json(updatedProduct);
@@ -52,9 +50,7 @@ router.put("/:pid", async (req, res) => {
 
 router.delete("/:pid", async (req, res) => {
   try {
-    const deletedProduct = await productManager.deleteProduct(
-      Number(req.params.pid)
-    );
+    const deletedProduct = await productManager.deleteProduct(req.params.pid);
     res.send(deletedProduct);
   } catch (error) {
     res.status(500).json({ error: error.message });

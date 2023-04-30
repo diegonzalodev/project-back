@@ -16,7 +16,7 @@ dataForm.addEventListener("submit", (e) => {
       socket.emit("client:deleteProduct", {
         id: idProduct.value,
       });
-      console.log(idProduct.value);
+      dataForm.reset();
     }
   });
 });
@@ -32,10 +32,10 @@ socket.on("newList", (data) => {
   }
   let list = "";
   data.forEach(
-    ({ id, title, description, code, price, stock, category, thumbnail }) => {
+    ({ _id, title, description, code, price, stock, category, thumbnail }) => {
       list += `
         <tr>
-        <td>${id}</td>
+        <td>${_id}</td>
         <td>${title}</td>
         <td>${description}</td>
         <td>${code}</td>
@@ -53,7 +53,7 @@ socket.on("newList", (data) => {
   const listAct =
     `
             <tr>
-            <th scope="col">Id</th>
+            <th scope="col">ID</th>
             <th scope="col">Name</th>
             <th scope="col">Description</th>
             <th scope="col">Code</th>
@@ -107,10 +107,10 @@ socket.on("server:productAdded", (newData) => {
   addForm.reset();
   let list = "";
   newData.forEach(
-    ({ id, title, description, code, price, stock, category, thumbnail }) => {
+    ({ _id, title, description, code, price, stock, category, thumbnail }) => {
       list += `
         <tr>
-        <td>${id}</td>
+        <td>${_id}</td>
         <td>${title}</td>
         <td>${description}</td>
         <td>${code}</td>
@@ -128,11 +128,11 @@ socket.on("server:productAdded", (newData) => {
   const listAct =
     `
             <tr>
-            <th scope="col">Id</th>
+            <th scope="col">ID</th>
             <th scope="col">Name</th>
             <th scope="col">Description</th>
-            <th scope="col">Price</th>
             <th scope="col">Code</th>
+            <th scope="col">Price</th>
             <th scope="col">Stock</th>
             <th scope="col">Category</th>
             <th scope="col">Thumbnail</th>

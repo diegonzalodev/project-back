@@ -1,10 +1,8 @@
 const { Router } = require("express");
-const { CartManagerFile } = require("../dao/filesystem/CartManager");
-const { ProductManagerFile } = require("../dao/filesystem/ProductManager");
+const cartManager = require("../dao/mongodb/CartManagerMongo");
+const productManager = require("../dao/mongodb/ProductManagerMongo");
 
 const router = Router();
-const cartManager = new CartManagerFile();
-const productManager = new ProductManagerFile();
 
 router.post("/", async (req, res) => {
   try {
@@ -17,8 +15,11 @@ router.post("/", async (req, res) => {
 
 router.get("/:cid", async (req, res) => {
   try {
-    const getProducts = await cartManager.getProductsOfCart(Number(req.params.cid));
-    if (!getProducts) return res.send({ error: "There is no cart with this ID" });
+    const getProducts = await cartManager.getProductsOfCart(
+      Number(req.params.cid)
+    );
+    if (!getProducts)
+      return res.send({ error: "There is no cart with this ID" });
     res.send({ status: "success", payload: getProducts });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -27,22 +28,24 @@ router.get("/:cid", async (req, res) => {
 
 router.post("/:cid/product/:pid", async (req, res) => {
   try {
-    const cart = await cartManager.getCardById(Number(req.params.cid));
-    const product = await productManager.getProductById(Number(req.params.pid));
+    const cart = await cartManager.getCartById(req.params.cid);
+    const product = await productManager.getProductById(req.params.pid);
     if (product) {
-      const productIndex = cart.products.findIndex((p) => p.id === Number(req.params.pid));
+      const productIndex = cart.products.findIndex(
+        (p) => p.id === req.params.pid
+      );
       if (productIndex >= 0) {
         cart.products[productIndex].quantity++;
       } else {
-        cart.products.push({ id: Number(req.params.pid), quantity: 1 });
+        cart.products.push({ id: req.params.pid, quantity: 1 });
       }
       await cartManager.saveCart(cart);
       res.send({ status: "success", payload: cart });
     } else {
-      res.status(404).json({ error: `Product with ID ${req.params.pid} not found` });
+      res
+        .status(404)
+        .json({ error: `Product with ID ${req.params.pid} not found` });
     }
-    await cartManager.saveCart(cart);
-    res.send({ status: "success", payload: cart });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -1,27 +1,23 @@
 const { Router } = require("express");
-const fs = require("fs");
-const path = require("path");
-const filePath = path.join(__dirname, "../products.json");
+const { productModel } = require("../dao/mongodb/models/product.model.js");
 const { messageModel } = require("../dao/mongodb/models/message.model.js");
 
 const router = Router();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const data = fs.readFileSync(filePath, "utf-8");
-    const products = JSON.parse(data);
-    res.render("home", { products: products });
+    const data = await productModel.find().lean();
+    res.render("home", { products: data });
   } catch (error) {
     console.error(error);
     res.render("home", { products: [] });
   }
 });
 
-router.get("/realtimeproducts", (req, res) => {
+router.get("/realtimeproducts", async (req, res) => {
   try {
-    const data = fs.readFileSync(filePath, "utf-8");
-    const products = JSON.parse(data);
-    res.render("realTimeProducts", { products: products });
+    const data = await productModel.find().lean();
+    res.render("realTimeProducts", { products: data });
   } catch (error) {
     console.error(error);
     res.render("realTimeProducts", { products: [] });
