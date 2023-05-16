@@ -19,12 +19,12 @@
         </div>
       </div>
     {{/each}}
-    <div class="pagination">
+    <div class="mb-5 d-flex justify-content-between pagination">
       {{#if hasPrevPage}}
-        <a href="/products?page={{prevPage}}">Previous</a>
+        <a class="btn btn-secondary fs-5" href={{prevPage}}>Previous</a>
       {{/if}}
       {{#if hasNextPage}}
-        <a href="/products?page={{nextPage}}">Next</a>
+        <a class="btn btn-secondary fs-5" href={{nextPage}}>Next</a>
       {{/if}}
     </div>
   {{else}}

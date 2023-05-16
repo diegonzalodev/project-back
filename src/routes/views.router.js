@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const url = require("url");
 const productManager = require("../dao/mongodb/ProductManagerMongo");
 const { productModel } = require("../dao/mongodb/models/product.model.js");
 const cartManager = require("../dao/mongodb/CartManagerMongo");
@@ -23,12 +24,17 @@ router.get("/products", async (req, res) => {
     const { docs, totalPages, prevPage, nextPage, hasPrevPage, hasNextPage } =
       result;
     if (page > totalPages) throw new Error("Page not found");
-    const products = docs.map((product) => product.toObject());
+    const currentUrl = url.parse(req.url, true);
+    delete currentUrl.search;
+    const paginationLinks = {
+      prevPage: prevPage ? url.format({ ...currentUrl, query: { ...currentUrl.query, page: prevPage } }) : null,
+      nextPage: nextPage ? url.format({ ...currentUrl, query: { ...currentUrl.query, page: nextPage } }) : null,
+    };
+    const products = Array.isArray(docs) ? docs.map((product) => product.toObject()) : [];
     res.render("products", {
       products,
       totalPages,
-      prevPage,
-      nextPage,
+      ...paginationLinks,
       page,
       hasPrevPage,
       hasNextPage,
@@ -37,6 +43,7 @@ router.get("/products", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 router.get("/carts/:cid", async (req, res) => {
   try {
