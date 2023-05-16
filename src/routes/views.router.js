@@ -22,12 +22,10 @@ router.get("/products", async (req, res) => {
     const result = await productManager.getPaginatedProducts(options);
     const { docs, totalPages, prevPage, nextPage, hasPrevPage, hasNextPage } =
       result;
-
-    if (page > totalPages) {
-      throw new Error("Page not found");
-    }
+    if (page > totalPages) throw new Error("Page not found");
+    const products = docs.map((product) => product.toObject());
     res.render("products", {
-      products: docs,
+      products,
       totalPages,
       prevPage,
       nextPage,
@@ -44,7 +42,6 @@ router.get("/carts/:cid", async (req, res) => {
   try {
     const cart = await cartManager.getCartById(req.params.cid);
     if (!cart) return res.send({ error: "There is no cart with this ID" });
-
     res.render("cart", { cart });
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -15,7 +15,6 @@ router.get("/", async (req, res) => {
       filter.category = query;
     }
     const products = await productManager.getProducts(filter);
-
     if (sort === "asc") {
       products.sort((a, b) => a.price - b.price);
     } else if (sort === "desc") {

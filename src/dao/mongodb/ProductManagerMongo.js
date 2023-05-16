@@ -72,14 +72,15 @@ class ProductManagerMongo {
     try {
       const { limit, page, sort, query } = options;
       const skip = (page - 1) * limit;
-      const count = await productModel.countDocuments(query);
-      const totalPages = Math.ceil(count / limit);
-      const products = await productModel
+      const productsQuery = productModel
         .find(query)
         .sort(sort)
         .skip(skip)
-        .limit(limit)
-        .lean();
+        .limit(limit);
+      const products = await productsQuery.exec();
+      const countQuery = productModel.countDocuments(query);
+      const count = await countQuery.exec();
+      const totalPages = Math.ceil(count / limit);
       const result = {
         docs: products,
         totalPages,
@@ -88,7 +89,7 @@ class ProductManagerMongo {
         hasPrevPage: page > 1,
         hasNextPage: page < totalPages,
       };
-      return { success: result };
+      return result;
     } catch (error) {
       throw new Error(error);
     }
