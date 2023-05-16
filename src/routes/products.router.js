@@ -5,12 +5,52 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const products = await productManager.getProducts();
-    let { limit } = req.query;
-    limit = parseInt(limit);
-    if (!limit || limit <= 0 || limit > products.length)
-      return res.send({ status: "success", payload: products });
-    res.send(products.slice(0, limit));
+    let { limit, page, sort, query } = req.query;
+    limit = parseInt(limit) || 10;
+    page = parseInt(page) || 1;
+    sort = sort || "";
+    query = query || "";
+    const filter = {};
+    if (query) {
+      filter.category = query;
+    }
+    const products = await productManager.getProducts(filter);
+
+    if (sort === "asc") {
+      products.sort((a, b) => a.price - b.price);
+    } else if (sort === "desc") {
+      products.sort((a, b) => b.price - a.price);
+    }
+    const totalPages = Math.ceil(products.length / limit);
+    page = Math.max(1, Math.min(page, totalPages));
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const paginatedProducts = products.slice(startIndex, endIndex);
+    const prevLink =
+      page > 1
+        ? `/api/products?limit=${limit}&page=${
+            page - 1
+          }&sort=${sort}&query=${query}`
+        : null;
+    const nextLink =
+      page < totalPages
+        ? `/api/products?limit=${limit}&page=${
+            page + 1
+          }&sort=${sort}&query=${query}`
+        : null;
+    const response = {
+      status: "success",
+      payload: paginatedProducts,
+      totalPages,
+      prevPage: page - 1,
+      nextPage: page + 1,
+      page,
+      hasPrevPage: page > 1,
+      hasNextPage: page < totalPages,
+      prevLink,
+      nextLink,
+    };
+    res.send({ status: "success", payload: response });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

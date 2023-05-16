@@ -67,6 +67,32 @@ class ProductManagerMongo {
       return new Error(error);
     }
   }
+
+  async getPaginatedProducts(options) {
+    try {
+      const { limit, page, sort, query } = options;
+      const skip = (page - 1) * limit;
+      const count = await productModel.countDocuments(query);
+      const totalPages = Math.ceil(count / limit);
+      const products = await productModel
+        .find(query)
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
+        .lean();
+      const result = {
+        docs: products,
+        totalPages,
+        prevPage: page > 1 ? page - 1 : null,
+        nextPage: page < totalPages ? page + 1 : null,
+        hasPrevPage: page > 1,
+        hasNextPage: page < totalPages,
+      };
+      return { success: result };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
 
 module.exports = new ProductManagerMongo();

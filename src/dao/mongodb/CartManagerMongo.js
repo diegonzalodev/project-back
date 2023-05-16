@@ -1,20 +1,21 @@
 const { cartModel } = require("./models/cart.model");
+
 class CartManagerMongo {
   async createCart() {
     try {
       const newCart = await cartModel.create({ products: [] });
       return newCart.toObject();
     } catch (error) {
-      return new Error(error);
+      throw new Error(error);
     }
   }
 
   async getCartById(id) {
     try {
-      const cart = await cartModel.findById(id).lean();
+      const cart = await cartModel.findById(id).populate("products").lean();
       return cart;
     } catch (error) {
-      return new Error(error);
+      throw new Error(error);
     }
   }
 
@@ -23,7 +24,7 @@ class CartManagerMongo {
       const cart = await cartModel.findById(id).lean();
       return cart ? cart.products : null;
     } catch (error) {
-      return new Error(error);
+      throw new Error(error);
     }
   }
 
@@ -36,7 +37,57 @@ class CartManagerMongo {
         .lean();
       return updatedCart;
     } catch (error) {
-      return new Error(error);
+      throw new Error(error);
+    }
+  }
+
+  async updateCart(cartId, products) {
+    try {
+      const updatedCart = await cartModel
+        .findByIdAndUpdate(cartId, { products }, { new: true })
+        .lean();
+      return updatedCart;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async updateProductQuantity(cartId, productId, quantity) {
+    try {
+      const updatedCart = await cartModel
+        .findOneAndUpdate(
+          { _id: cartId, "products.id": productId },
+          { $set: { "products.$.quantity": quantity } },
+          { new: true }
+        )
+        .lean();
+      return updatedCart;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async deleteCart(cartId) {
+    try {
+      await cartModel.findByIdAndDelete(cartId);
+      return { success: `Cart with ID ${cartId} deleted` };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async removeProductFromCart(cartId, productId) {
+    try {
+      const updatedCart = await cartModel
+        .findByIdAndUpdate(
+          cartId,
+          { $pull: { products: { id: productId } } },
+          { new: true }
+        )
+        .lean();
+      return updatedCart;
+    } catch (error) {
+      throw new Error(error);
     }
   }
 }

@@ -1,0 +1,20 @@
+<h1 class="mt-3 text-center">Product List</h1>
+{{#each products}}
+  <div class="product">
+    <h2>{{name}}</h2>
+    <p>{{description}}</p>
+    <p>Price: ${{price}}</p>
+    <form action="/api/carts" method="post">
+      <input type="hidden" name="productId" value="{{_id}}" />
+      <button type="submit">Add to Cart</button>
+    </form>
+  </div>
+{{/each}}
+<div class="pagination">
+  {{#if prevPage}}
+    <a href="/products?page={{prevPage}}">Previous</a>
+  {{/if}}
+  {{#if nextPage}}
+    <a href="/products?page={{nextPage}}">Next</a>
+  {{/if}}
+</div>
