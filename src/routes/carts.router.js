@@ -17,7 +17,7 @@ router.get("/:cid", async (req, res) => {
   try {
     const cart = await cartManager
       .getCartById(req.params.cid)
-      .populate("products");
+      .populate("products", "-_id -__v"); // Excluimos los campos _id y __v del populate
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
     }
@@ -31,21 +31,13 @@ router.post("/:cid/product/:pid", async (req, res) => {
   try {
     const cart = await cartManager.getCartById(req.params.cid);
     const product = await productManager.getProductById(req.params.pid);
-    if (product) {
-      const productIndex = cart.products.findIndex(
-        (p) => p.id.toString() === req.params.pid
-      );
-      if (productIndex >= 0) {
-        cart.products[productIndex].quantity++;
-      } else {
-        cart.products.push({ id: product._id, quantity: 1 });
-      }
+    if (cart && product) {
+      const productIndex = cart.products.findIndex((p) => p.id.toString() === req.params.pid);
+      (productIndex >= 0) ? cart.products[productIndex].quantity++ : cart.products.push({ id: product._id, quantity: 1 });
       await cartManager.saveCart(cart);
       res.json({ status: "success", payload: cart });
     } else {
-      res
-        .status(404)
-        .json({ error: `Product with ID ${req.params.pid} not found` });
+      res.status(404).json({ error: `Product or Cart not found` });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -54,21 +46,32 @@ router.post("/:cid/product/:pid", async (req, res) => {
 
 router.put("/:cid", async (req, res) => {
   try {
-    const cart = await cartManager.updateCart(req.params.cid, req.body);
-    res.json({ status: "success", payload: cart });
+    const cartId = req.params.cid;
+    const cart = await cartManager.getCartById(cartId);
+    if (!cart) return res.status(404).json({ error: "Cart not found" });
+    const { products } = req.body;
+    if (!Array.isArray(products)) return res.status(400).json({ error: "Invalid products array" });
+    cart.products = products;
+    const updatedCart = await cartManager.saveCart(cart);
+    res.json({ status: "success", payload: updatedCart });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-router.put("/:cid/product/:pid", async (req, res) => {
+router.put("/:cid/products/:pid", async (req, res) => {
   try {
-    const cart = await cartManager.updateProductQuantity(
-      req.params.cid,
-      req.params.pid,
-      req.body.quantity
-    );
-    res.json({ status: "success", payload: cart });
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
+    const cart = await cartManager.getCartById(cartId);
+    if (!cart) return res.status(404).json({ error: "Cart not found" });
+    const productIndex = cart.products.findIndex((p) => p.id.toString() === productId);
+    if (productIndex === -1) return res.status(404).json({ error: "Product not found in Cart" });
+    const newQuantity = parseInt(req.body.quantity);
+    if (isNaN(newQuantity)) return res.status(400).json({ error: "Invalid quantity value" });
+    cart.products[productIndex].quantity = newQuantity;
+    const updatedCart = await cartManager.saveCart(cart);
+    res.json({ status: "success", payload: updatedCart });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -78,9 +81,7 @@ router.delete("/:cid", async (req, res) => {
   try {
     const cartId = req.params.cid;
     const cart = await cartManager.getCartById(cartId);
-    if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
-    }
+    if (!cart) return res.status(404).json({ error: "Cart not found" });
     cart.products = [];
     const updatedCart = await cartManager.saveCart(cart);
     res.json({ status: "success", payload: updatedCart });
@@ -91,11 +92,15 @@ router.delete("/:cid", async (req, res) => {
 
 router.delete("/:cid/product/:pid", async (req, res) => {
   try {
-    const cart = await cartManager.removeProductFromCart(
-      req.params.cid,
-      req.params.pid
-    );
-    res.json({ status: "success", payload: cart });
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
+    const cart = await cartManager.getCartById(cartId);
+    if (!cart) return res.status(404).json({ error: "Cart not found" });
+    const productIndex = cart.products.findIndex((p) => p.id.toString() === productId);
+    if (productIndex === -1) return res.status(404).json({ error: "Product not found in Cart" });
+    cart.products.splice(productIndex, 1);
+    const updatedCart = await cartManager.saveCart(cart);
+    res.json({ status: "success", payload: updatedCart });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

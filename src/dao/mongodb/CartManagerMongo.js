@@ -12,7 +12,10 @@ class CartManagerMongo {
 
   async getCartById(id) {
     try {
-      const cart = await cartModel.findById(id).populate("products").lean();
+      const cart = await cartModel
+        .findById(id)
+        .populate("products", "-_id -__v")
+        .lean();
       return cart;
     } catch (error) {
       throw new Error(error);
