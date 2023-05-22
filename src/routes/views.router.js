@@ -7,8 +7,17 @@ const { messageModel } = require("../dao/mongodb/models/message.model.js");
 
 const router = Router();
 
+router.get("/", (req, res) => {
+  res.render("login", {});
+});
+
+router.get("/register", (req, res) => {
+  res.render("register", {});
+});
+
 router.get("/products", async (req, res) => {
   try {
+    const user = req.session.user;
     let { limit, page, sort, query } = req.query;
     limit = parseInt(limit) || 10;
     page = parseInt(page) || 1;
@@ -27,10 +36,22 @@ router.get("/products", async (req, res) => {
     const currentUrl = url.parse(req.url, true);
     delete currentUrl.search;
     const paginationLinks = {
-      prevPage: prevPage ? url.format({ ...currentUrl, query: { ...currentUrl.query, page: prevPage } }) : null,
-      nextPage: nextPage ? url.format({ ...currentUrl, query: { ...currentUrl.query, page: nextPage } }) : null,
+      prevPage: prevPage
+        ? url.format({
+            ...currentUrl,
+            query: { ...currentUrl.query, page: prevPage },
+          })
+        : null,
+      nextPage: nextPage
+        ? url.format({
+            ...currentUrl,
+            query: { ...currentUrl.query, page: nextPage },
+          })
+        : null,
     };
-    const products = Array.isArray(docs) ? docs.map((product) => product.toObject()) : [];
+    const products = Array.isArray(docs)
+      ? docs.map((product) => product.toObject())
+      : [];
     res.render("products", {
       products,
       totalPages,
@@ -38,12 +59,12 @@ router.get("/products", async (req, res) => {
       page,
       hasPrevPage,
       hasNextPage,
+      user,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 router.get("/carts/:cid", async (req, res) => {
   try {
@@ -52,16 +73,6 @@ router.get("/carts/:cid", async (req, res) => {
     res.render("cart", { cart });
   } catch (error) {
     res.status(500).json({ error: error.message });
-  }
-});
-
-router.get("/", async (req, res) => {
-  try {
-    const data = await productModel.find().lean();
-    res.render("home", { products: data });
-  } catch (error) {
-    console.error(error);
-    res.render("home", { products: [] });
   }
 });
 

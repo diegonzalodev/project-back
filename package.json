@@ -19,13 +19,17 @@
   },
   "homepage": "https://github.com/diegonzalodev/project-back#readme",
   "dependencies": {
+    "connect-mongo": "^5.0.0",
+    "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
     "express-handlebars": "^7.0.6",
+    "express-session": "^1.17.3",
     "handlebars": "^4.7.7",
     "mongodb": "^5.3.0",
     "mongoose": "^7.1.0",
     "mongoose-paginate-v2": "^1.7.1",
     "morgan": "^1.10.0",
+    "session-file-store": "^1.5.0",
     "socket.io": "^4.6.1"
   }
 }

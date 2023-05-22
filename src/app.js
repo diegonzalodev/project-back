@@ -1,10 +1,15 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
 const { Server } = require("socket.io");
+const cookieParser = require("cookie-parser");
+const { create } = require("connect-mongo");
 const routerServer = require("./routes");
 const { connectDB } = require("./config/configServer.js");
 const { messageModel } = require("./dao/mongodb/models/message.model.js");
 const productManager = require("./dao/mongodb/ProductManagerMongo");
+
+const pruebasRouter = require("./routes/pruebas.router");
+const session = require("express-session");
 
 const app = express();
 const PORT = 8080;
@@ -25,8 +30,27 @@ app.set("view engine", "handlebars");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/static", express.static(__dirname + "/public"));
+app.use(cookieParser("P@l@br@S3cr3t4"));
+app.use(
+  session({
+    store: create({
+      mongoUrl:
+        "mongodb+srv://diegonzalodev:diegonzalodev@cluster0.v0qmfgf.mongodb.net/ecommerce?retryWrites=true&w=majority",
+      mongoOptions: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      },
+      ttl: 10000 * 60,
+    }),
+    secret: "SecretCoder",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.use(routerServer);
+
+app.use("/pruebas", pruebasRouter);
 
 socketServer.on("connection", async (socket) => {
   console.log("Client Connected", socket.id);
