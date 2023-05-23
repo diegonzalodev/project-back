@@ -3,13 +3,13 @@ const handlebars = require("express-handlebars");
 const { Server } = require("socket.io");
 const cookieParser = require("cookie-parser");
 const { create } = require("connect-mongo");
+const passport = require("passport");
+const session = require("express-session");
 const routerServer = require("./routes");
 const { connectDB } = require("./config/configServer.js");
+const { initPassport, initPassportGithub } = require("./config/passport.config.js");
 const { messageModel } = require("./dao/mongodb/models/message.model.js");
 const productManager = require("./dao/mongodb/ProductManagerMongo");
-
-const pruebasRouter = require("./routes/pruebas.router");
-const session = require("express-session");
 
 const app = express();
 const PORT = 8080;
@@ -47,10 +47,12 @@ app.use(
     saveUninitialized: false,
   })
 );
+initPassport();
+initPassportGithub();
+passport.use(passport.initialize());
+passport.use(passport.session());
 
 app.use(routerServer);
-
-app.use("/pruebas", pruebasRouter);
 
 socketServer.on("connection", async (socket) => {
   console.log("Client Connected", socket.id);

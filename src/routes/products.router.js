@@ -1,9 +1,10 @@
 const { Router } = require("express");
 const productManager = require("../dao/mongodb/ProductManagerMongo");
+const { authToken } = require("../utils/jwt");
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", authToken, async (req, res) => {
   try {
     let { limit, page, sort, query } = req.query;
     limit = parseInt(limit) || 10;
