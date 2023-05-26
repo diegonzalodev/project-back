@@ -8,7 +8,6 @@ const { connectDB } = require("./config/configServer.js");
 const { messageModel } = require("./dao/mongodb/models/message.model.js");
 const productManager = require("./dao/mongodb/ProductManagerMongo");
 
-const pruebasRouter = require("./routes/pruebas.router");
 const session = require("express-session");
 
 const app = express();
@@ -49,8 +48,6 @@ app.use(
 );
 
 app.use(routerServer);
-
-app.use("/pruebas", pruebasRouter);
 
 socketServer.on("connection", async (socket) => {
   console.log("Client Connected", socket.id);

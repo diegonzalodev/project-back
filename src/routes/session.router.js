@@ -16,9 +16,7 @@ router.post("/register", async (req, res) => {
       password,
     };
     let resultUser = await userModel.create(newUser);
-    res
-      .status(200)
-      .send({ status: "success", message: "Correctly registered user" });
+    res.redirect("/")
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
