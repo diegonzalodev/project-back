@@ -5,9 +5,8 @@ const { auth } = require("../middlewares/authentication.middleware");
 const router = Router();
 
 router.post("/register", passport.authenticate("register", { failureRedirect: "/api/session/failregister" }), async (req, res) => {
-    res.send({ status: "success", message: "Correctly registered user" });
-  }
-);
+  res.redirect("/")
+});
 
 router.post("/login", passport.authenticate("login", {failureRedirect: "/api/session/faillogin"}), async (req, res) => {
   if (!req.user) return res.status(401).send({status: "error", message: "Invalid credentials"})
