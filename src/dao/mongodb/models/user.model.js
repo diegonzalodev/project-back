@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const collection = "users";
+const collection = "users-hash";
 
 const userSchema = new Schema({
   first_name: {
