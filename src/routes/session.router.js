@@ -4,27 +4,8 @@ const { auth } = require("../middlewares/authentication.middleware");
 
 const router = Router();
 
-<<<<<<< HEAD
-router.post("/register", async (req, res) => {
-  try {
-    const { first_name, last_name, email, password } = req.body;
-    const existUser = await userModel.findOne({ email });
-    if (existUser) return res.send({ status: "error", error: "This email already exists" });
-    const newUser = {
-      first_name,
-      last_name,
-      email,
-      password,
-    };
-    let resultUser = await userModel.create(newUser);
-    res.redirect("/")
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-=======
 router.post("/register", passport.authenticate("register", { failureRedirect: "/api/session/failregister" }), async (req, res) => {
   res.redirect("/")
->>>>>>> develop
 });
 
 router.post("/login", passport.authenticate("login", {failureRedirect: "/api/session/faillogin"}), async (req, res) => {
