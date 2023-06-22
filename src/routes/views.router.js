@@ -4,6 +4,7 @@ const productManager = require("../dao/mongodb/ProductManagerMongo");
 const { productModel } = require("../dao/mongodb/models/product.model.js");
 const cartManager = require("../dao/mongodb/CartManagerMongo");
 const { messageModel } = require("../dao/mongodb/models/message.model.js");
+const { passportCall } = require("../passport-jwt/passportCall");
 
 const router = Router();
 
@@ -15,9 +16,9 @@ router.get("/register", (req, res) => {
   res.render("register", {});
 });
 
-router.get("/products", async (req, res) => {
+router.get("/products", passportCall("jwt"), async (req, res) => {
   try {
-    const user = req.session.user;
+    const user = req.user;
     let { limit, page, sort, query } = req.query;
     limit = parseInt(limit) || 10;
     page = parseInt(page) || 1;
@@ -59,7 +60,7 @@ router.get("/products", async (req, res) => {
       page,
       hasPrevPage,
       hasNextPage,
-      user,
+      ...user,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
